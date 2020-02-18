@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  stop_on_error="no" title='Ribaltamento dati su bilancio di previsione da gestione precedente'>
+    <settings >
+        <mail_on_error ><![CDATA[no]]></mail_on_error>
+    </settings>
+
+    <params >
+        <param  name="CODICE_ENTE" value="UNSPEC"/>
+
+        <param  name="ANNO_BILANCIO" value=""/>
+
+        <param  name="FLAG_IMPORTI" value="false"/>
+
+        <param  name="FLAG_IMPEGNI" value="false"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+ANNO=$(date +%Y)
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=5-aggiorna-importi-previsione \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE} \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO_BILANCIO:-$ANNO} \
+  -param:flag_importi=$SCHEDULER_PARAM_FLAG_IMPORTI \
+  -param:flag_impegni=$SCHEDULER_PARAM_FLAG_IMPEGNI \
+  -level=${ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

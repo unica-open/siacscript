@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" title="OIL - Import ritorni firme, quietanze, provvisori" max_orders="1">
+    <job_chain_node  error_state="error" job="import-oil-firme" state="firme"/>
+
+    <job_chain_node  error_state="error" job="import-oil-provvisori" state="provvisori"/>
+
+    <job_chain_node  error_state="error" job="import-oil-quietanze" state="quietanze"/>
+
+    <job_chain_node  state="invia-avvisi" job="oil-q-invia-mail" error_state="error" on_error="setback"/>
+
+    <job_chain_node  state="ok"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

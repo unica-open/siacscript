@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Scarichi Massivi COAL" priority="210">
+    <params >
+        <param  name="ENTE" value="COAL"/>
+    </params>
+
+    <run_time  schedule="scarichi-massivi"/>
+</order>

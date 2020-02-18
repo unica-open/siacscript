@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<schedule  title="Invio marc giornalieri">
+    <period  single_start="22:00"/>
+</schedule>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<job order="no" stop_on_error="no" title="Elimina i file di clearo piu vecchi di 2 giorni">
+  <settings>
+    <mail_on_error><![CDATA[yes]]></mail_on_error>
+    <log_mail_to><![CDATA[hd_contabilia@csi.it]]></log_mail_to>
+    <log_mail_cc><![CDATA[giovanni.tosto@csi.it]]></log_mail_cc>
+    <log_level><![CDATA[debug9]]></log_level>
+  </settings>
+  <script language="shell">
+<![CDATA[
+# seleziona e cancella i file TEMPORANEI con la data di modifica superiore a due giorni
+echo ===== Sto rimuovendo i seguenti file dalle aree temporanee =====
+find /skedul/progetti/siac-int-01/dati/out/clearo/ -type f -mtime +2 -ls -delete
+echo ------
+echo
+
+echo ===== Sto rimuovendo i seguenti file dalle aree di interscambio =====
+# rimuove i file dalle aree di interscambio (quelli piu vecchi di 2 giorni)
+find /interscambio_isole/skedul/siac-int-01/out/clearo -type f -mtime +2 -ls -delete
+find /interscambio_ent/skedul/siac-int-01/out/clearo   -type f -mtime +2 -ls -delete
+echo ------
+
+]]>
+  </script>
+  <run_time >
+     <period  single_start="21:00" when_holiday="next_non_holiday"/>
+  </run_time>
+</job>

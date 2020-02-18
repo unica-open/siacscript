@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<order title="Scarico Massivo CMTO" priority="100">
+   <params>
+      <param name="ENTE" value="CMTO"/>
+   </params>
+   <run_time schedule="scarichi_massivi_full"/>
+</order>

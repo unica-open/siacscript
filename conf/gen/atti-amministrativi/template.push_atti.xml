@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job >
+    <settings >
+        <mail_on_error >yes</mail_on_error>
+    </settings>
+
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/atti-amministrativi.sh {istanza_fornitore} {cod_ente}
+        ]]>
+    </script>
+	
+    <run_time>
+        <period  when_holiday="ignore_holiday" single_start="{start_time}"/>
+    </run_time>
+
+</job>

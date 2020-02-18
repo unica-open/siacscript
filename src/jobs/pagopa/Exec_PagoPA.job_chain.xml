@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" max_orders="20">
+    <job_chain_node  state="Inizio" job="01_RunPagoPA" error_state="error"/>
+
+    <job_chain_node  state="Fase2" job="02_ElaborazioneRiconc" error_state="error"/>
+
+    <job_chain_node  state="Fine"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

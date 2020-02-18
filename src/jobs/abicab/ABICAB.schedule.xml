@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<schedule  title="qualsiasi ABICAB">
+    <weekdays >
+        <day  day="6">
+            <period  single_start="06:00"/>
+        </day>
+    </weekdays>
+</schedule>

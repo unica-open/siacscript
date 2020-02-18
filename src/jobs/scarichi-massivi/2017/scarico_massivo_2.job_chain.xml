@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" max_orders="10">
+    <job_chain_node  state="dump" job="scarico_massivo_2" next_state="end"/>
+
+    <job_chain_node  state="end"/>
+</job_chain>

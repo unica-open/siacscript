@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Elaborazione quadri C e F Modello 770">
+    <params >
+        <param  name="ENTE" value=""/>
+
+        <param  name="ANNO" value=""/>
+
+        <param  name="EX_ENTE" value="EX"/>
+
+        <param  name="QUADRO_C_F" value="T"/>
+
+        <param  name="ETL_LOGLEVEL" value="Basic"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/tracciato/run_tracciato_770.kjb \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO}\
+  -param:codice_ente=${SCHEDULER_PARAM_ENTE}\
+  -param:ex_ente=${SCHEDULER_PARAM_EX_ENTE}\
+  -param:quadro_c_f=${SCHEDULER_PARAM_QUADRO_C_F}\
+  -level=${SCHEDULER_PARAM_ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

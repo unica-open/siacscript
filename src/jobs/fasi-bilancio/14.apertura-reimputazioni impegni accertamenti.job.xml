@@ -1,0 +1,28 @@
+<job  title="apertura - Reimputazioni Impegni Accertamenti" stop_on_error="no">
+    <settings >
+        <mail_on_error ><![CDATA[no]]></mail_on_error>
+    </settings>
+    <params >
+        <param  name="CODICE_ENTE" value=""/>
+        <param  name="ANNO_BILANCIO" value=""/>
+        <param  name="MOVGEST_TIPO_CODE" value=""/>
+		<param  name="IMPOSTA_PROVVEDIM" value=""/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+ETL_LOGLEVEL=Detailed
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+ANNO=$(date +%Y)
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=14-fnc_fasi_bil_gest_reimputa \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE} \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO_BILANCIO:-$ANNO} \
+  -param:p14_movgest_tipo_code=${SCHEDULER_PARAM_MOVGEST_TIPO_CODE} \
+  -param:p14_imposta_provvedim=${SCHEDULER_PARAM_IMPOSTA_PROVVEDIM} \
+  -level=${ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

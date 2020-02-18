@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="elaborazione dei tracciati EMIOFE ricevuti dai file zip di UNIIT" order="yes" stop_on_error="no">
+    <params>
+        <param  name="ENTE" value=""/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+
+        <param  name="ZIPFILE" value="required"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+set +e
+set -x
+
+ENTE=$SCHEDULER_PARAM_ENTE
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+PFX="EMIOFE_"
+TODAY=$(date +%Y-%m-%d)
+DT=$(date +%Y%m%d%k%M%S)
+
+# il rename dei file va bene solo per l'ente REGP, controlla quindi sempre che
+# non venga lanciato per altri enti
+#if [ "REGP" != "$ENTE" ]; then
+#         exit 221
+#fi
+
+# usa oggi come data di elaborazione se non ne e' stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$TODAY
+fi
+
+# file zip da "elaborare"
+ZIPFILE="$SCHEDULER_PARAM_ZIPFILE"
+
+# la cartella dove va unzippato (warning: folder names could clash)
+#OUTDIR=/skedul/progetti/siac-int-01/dati/wrk/oil-uniapi/$ENTE/emfe
+OUTDIR=/skedul/progetti/siac-int-01/dati/wrk/oil-uniapi/$ENTE
+
+
+rm -rf $OUTDIR/$DATA_ELABORAZIONE
+mkdir -p $OUTDIR
+
+echo "Prima di  unzip"
+# scompatta lo zip scaricato
+unzip -o $ZIPFILE $DATA_ELABORAZIONE/* -d $OUTDIR
+
+echo "Termine unzip"
+
+# muove i file delle firme alla radice di OUTDIR
+# f_regexp = ^RicSisC_RS_6220100\.[0-9A-Z]+
+# f_folder = /skedul/progetti/siac-int-01/dati/wrk/oil-uniapi/REGP
+
+# dopo unzippato rinomina i file
+COUNT=0
+#FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/${DATA_ELABORAZIONE}_RicSisC_RS*)
+FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/*)
+echo "dopo aver impostato FILES"
+for f in $FILES
+do
+    #echo "processa file "
+    dir=$(dirname $f)
+    name=$(basename $f)
+    COUNT=$(expr $COUNT + 1)
+    #echo "$f ---> $dir/$PFX$name"
+    # rinomina i file contenuti
+    mv $f $dir/$PFX$name
+done
+]]>
+    </script>
+
+    <run_time />
+</job>

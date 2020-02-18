@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order >
+    <params >
+        <param  name="ENTE" value="CMTO"/>
+
+        <param  name="ZIPFILE" value="/skedul/progetti/siac-int-01/dati/in/siopeplus/"/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+
+        <param  name="ANNO" value=""/>
+    </params>
+
+    <run_time  let_run="no"/>
+</order>

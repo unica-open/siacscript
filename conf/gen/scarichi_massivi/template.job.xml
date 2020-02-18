@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Scarico massivo {anno} {cod_ente}">
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh	\
+	all			 							            \
+	{cod_ente}                                          \
+	{anno}
+        ]]>
+    </script>
+
+    <run_time>
+        <period  when_holiday="ignore_holiday" single_start="{start_time}"/>
+    </run_time>
+</job>

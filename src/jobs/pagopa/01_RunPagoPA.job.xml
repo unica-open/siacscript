@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  order="yes" stop_on_error="no" title="Scarico Dati da PagoPA da Java app">
+    <script  language="shell">
+        <![CDATA[
+set -e
+#set -x
+LINEA_CLIENTE=$SCHEDULER_PARAM_LINEA_CLIENTE
+CODICE_ENTE=$SCHEDULER_PARAM_CODICE_ENTE
+
+# Percorso dell'applicativo Java
+JAVAAPPDIR=/skedul/java/siac-mul-01/siacbatch/bin
+
+# chiama l'applicazione
+$JAVAAPPDIR/run-pagopa $LINEA_CLIENTE $CODICE_ENTE
+        ]]>
+    </script>
+
+    <monitor  name="configuration_monitor" ordering="0">
+        <script  java_class="sos.scheduler.managed.configuration.ConfigurationOrderMonitor" language="java"/>
+    </monitor>
+
+    <run_time />
+</job>

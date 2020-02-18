@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="OIL Import Quietanze" stop_on_error="no" order="yes" tasks="1">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+    </settings>
+
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+ETL_SRC=/skedul/etl_open/siac-int-01/siacetlbo/ordinativoInformatico/
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_SRC/ritorni/avvisi_bonifici-run.kjb \
+        -param:codice_ente=$SCHEDULER_PARAM_ENTE \
+        -param:anno_bilancio=$(date +%Y) \
+        -level=${SCHEDULER_PARAM_ETL_LOGGER:-Basic}
+        ]]>
+    </script>
+
+    <delay_order_after_setback  setback_count="1" is_maximum="no" delay="00:20"/>
+
+    <delay_order_after_setback  setback_count="3" is_maximum="yes"/>
+
+    <run_time />
+</job>

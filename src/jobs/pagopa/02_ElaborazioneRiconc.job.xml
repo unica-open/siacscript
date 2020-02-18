@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  order="yes" stop_on_error="no" title="Costruzione accertamenti in Contabilia">
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+# invoca il job pentaho per la creazione dei provvisori
+###################################################
+
+LINEA_CLIENTE=$SCHEDULER_PARAM_LINEA_CLIENTE
+CODICE_ENTE=$SCHEDULER_PARAM_CODICE_ENTE
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+fi
+
+ETL_SRC=/skedul/etl_open/siac-int-01/siacetlbo/pagoPA/
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_SRC/launcher.kjb \
+  -param:nome_job=01-Elaborazione_Riconc \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE} \
+  -param:linea_cliente=${SCHEDULER_PARAM_LINEA_CLIENTE} \
+  -level=${ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <monitor  name="configuration_monitor" ordering="0">
+        <script  java_class="sos.scheduler.managed.configuration.ConfigurationOrderMonitor" language="java"/>
+    </monitor>
+
+    <run_time />
+</job>

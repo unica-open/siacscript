@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" title="Elaborazione dei tracciati EMIOFE">
+    <job_chain_node  state="extracting" job="move-gdc" error_state="error"/>
+
+    <job_chain_node  state="elaborazione" job="elabora-gdc" error_state="error"/>
+
+    <job_chain_node  state="done"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

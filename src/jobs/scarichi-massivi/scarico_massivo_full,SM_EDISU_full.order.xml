@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<order title="Scarico Massivo EDISU" priority="200">
+   <params>
+      <param name="ENTE" value="EDISU"/>
+   </params>
+   <run_time schedule="scarichi_massivi_full"/>
+</order>

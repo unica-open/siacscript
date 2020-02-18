@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  stop_on_error="no" title='Apertura bilancio di gestione provvisorio' >
+    <settings >
+        <mail_on_error ><![CDATA[no]]></mail_on_error>
+    </settings>
+
+    <params >
+        <param  name="CODICE_ENTE" value="UNSPEC"/>
+
+        <param  name="CHECK_PREV" value="true"/>
+
+        <param  name="SET_IMPORTI" value="true"/>
+
+        <param  name="ANNO_BILANCIO" value=""/>
+
+        <param  name="STEP_PARTENZA" value="99"/>
+		
+		    <param  name="FASE_BILANCIO" value="E"/>		
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+ANNO=$(date +%Y)
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=2e3-apertura-bilancio-gestione \
+  -param:tipo_bilancio=$SCHEDULER_PARAM_FASE_BILANCIO \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE} \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO_BILANCIO:-$ANNO} \
+  -param:step_partenza=$SCHEDULER_PARAM_STEP_PARTENZA \
+  -param:checkPrevious=$SCHEDULER_PARAM_CHECK_PREV \
+  -param:setImporti=$SCHEDULER_PARAM_SET_IMPORTI \
+  -level=${ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

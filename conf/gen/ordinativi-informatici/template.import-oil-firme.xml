@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="OIL import Firme {cod_ente}">
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/oil-ritorni.sh {cod_ente} {anno} RICFIMIF
+        ]]>
+    </script>
+
+    <run_time >
+        <period  single_start="{start_time}" when_holiday="ignore_holiday"/>
+    </run_time>
+</job>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ##################################################### -->
+<!-- # Copyright 2006 (c) CSI Piemonte.                  # -->
+<!-- #                                                   # -->
+<!-- # build.xml file per compilazione e generazione     # -->
+<!-- # del pacchetto per il rilascio dell'applicazione.  # -->
+<!-- #                                                   # -->
+<!-- # Per una lista completa dei tasks eseguibili usare # -->
+<!-- # l'argomento di ant -projecthelp quando si         # -->
+<!-- # richiama questo build.xml.                        # -->
+<!-- ##################################################### -->
+
+
+<project xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+         basedir="."
+         default="distribution"
+         name="siacscript">
+
+    <description>Build file per la componente : [siacscript]</description>
+
+    
+    <property file="buildfiles/build.properties"/>
+	
+    <!-- ############################################################# -->
+    <!-- # Target: init                                              # -->
+    <!-- ############################################################# -->
+    <target name="init" description="Inizializza lo script Ant.">
+        <tstamp/>
+        <!-- se non specificato da riga di comando usa l'ambiente local -->
+        <property name="target" value="local"/>
+        <property name="target.dir" location="target/${target}"/>
+        <property name="archives.dir" location="${target.dir}/archives"/>		
+		
+        <!-- crea l'alberatura -->
+        <mkdir dir="${archives.dir}"/>
+		<mkdir dir="${dist}"/>
+		
+		<!-- carica le properties per l'ambiente -->
+		<property file="buildfiles/${target}.properties"/>
+    </target>
+
+
+    <!-- Copia tutte le risorse -->
+    <target name="process-resources" depends="init">
+	
+        <!-- copia le risorse non filtrate -->
+        <copy todir="${target.dir}/${componente}">			
+            <fileset dir="${script}">
+            </fileset>			
+			<filterchain>
+				<fixcrlf eol='unix' />
+			</filterchain>
+        </copy>
+		
+        <copy todir="${target.dir}/${componente}-jobs">
+            <fileset dir="${job}" />
+			<filterchain>
+				<fixcrlf eol='unix' />
+				<replacetokens>
+					<token key='job.settings.log_mail_to' value='${job.settings.log_mail_to}'/>
+					<token key='job.settings.log_mail_cc' value='${job.settings.log_mail_cc}'/>
+					<token key='atti.cmto.mail_to' value='${atti.cmto.mail_to}'/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+    </target>
+
+	<!-- assembla in tar di installazione della componente per la VM di schedulazione.
+		NOTA: il path prefix delle cartelle contenute è relativo alla home dell'utente di schedulazione (skedul) e rispecchia
+		l'alberatura standard delle cartelle per l'ambiente di schedulazione -->
+    <target name="-assemble-tar" depends="init, process-resources">
+        <tar tarfile="${archives.dir}/${dist-file-name}.tar" longfile='gnu'>
+
+            <tarfileset dir="${target.dir}/${componente}/procscript" includes='**'
+					filemode='755'
+					prefix="procsked/procscript" 
+					preserveLeadingSlashes='true'>
+            </tarfileset>
+			
+			<tarfileset dir='${target.dir}/${componente}-jobs'
+					prefix="progetti/siac-int-01/temp-jobs" 
+					preserveLeadingSlashes='true'>
+			</tarfileset> 
+            
+        <!--
+            <tarfileset dir="${target.dir}/${componente}" excludes='/programmi/**'
+					prefix="/skedul/procsked/procscript" 
+					preserveLeadingSlashes='true'>
+            </tarfileset>
+			-->
+		<!--
+            <zipfileset dir="${target.dir}/${componente}" fullpath="/skedul/progetti/siac-int-01/">
+            </zipfileset>			
+		-->
+        </tar>
+				
+    </target>
+	
+    <target name="package" depends="init, process-resources, -assemble-tar">
+    </target>
+	
+    <target name="distribution" depends="package, -assemble-tar">
+        <!-- copia i tar nella usuale cartella dist -->
+        <copy todir='${dist}/${target}'>
+            <fileset dir="${archives.dir}" includes="*.*"/>
+        </copy>
+    </target>
+
+    <!-- -->
+    <!-- ############################################################# -->
+    <!-- # [CLEAN]: clean                                            # -->
+    <!-- ############################################################# -->
+    <!-- -->
+    <target name="clean" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="init">
+        <delete dir="target" verbose="n"/>
+    </target>
+
+	<!-- solo un alias per clean -->
+    <target name="clean-all" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="clean">
+    </target>
+	
+    <!-- -->
+    <!-- ############################################################# -->
+    <!-- # Target: about                                             # -->
+    <!-- ############################################################# -->
+    <!-- -->
+    <target name="about" description="Visualizza l'elenco dei target
+                                    pubblici dello script.">
+
+        <loadproperties srcfile="buildfiles/build.properties"/>
+        <loadfile property="about" srcfile="buildfiles/about.txt"/>
+        <echo message="${about}"/>
+    </target>
+
+    <!-- -->
+    <!-- ############################################################# -->
+    <!-- # Target: about-custom                                      # -->
+    <!-- ############################################################# -->
+    <!-- -->
+    <target name="about-custom"
+            description="Visualizza l'elenco di tutti i target,
+                       pubblici e privati
+                       (equivalente a 'ant -projecthelp')">
+
+        <loadproperties srcfile="buildfiles/build.properties"/>
+        <loadfile property="about-custom" srcfile="buildfiles/about-custom.txt"/>
+        <echo message="${about-custom}"/>
+        <java classname="org.apache.tools.ant.Main">
+            <arg value="-projecthelp"/>
+        </java>
+    </target>
+
+</project>

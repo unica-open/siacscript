@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  order="no" stop_on_error="no" title="Svecchiamento stampe webapp siac">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+
+        <log_level ><![CDATA[info]]></log_level>
+    </settings>
+
+    <params >
+        <param  name="ENTE" value="AIPO"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+echo "Svecchiamento stampe ente: $SCHEDULER_PARAM_ENTE"
+/skedul/procsked/procscript/clean-stampe.sh $SCHEDULER_PARAM_ENTE
+        ]]>
+    </script>
+
+    <run_time  schedule="stampe-cleanup"/>
+</job>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Push Atti AIPO" stop_on_error="no">
+    <settings>
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+    </settings>
+
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/atti-amministrativi.sh atru-aipo-01 AIPO
+        ]]>
+    </script>
+
+    <run_time >
+        <period  when_holiday="ignore_holiday" single_start="08:05"/>
+    </run_time>
+</job>

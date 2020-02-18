@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Bilancio armonizzato P101">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+
+    </settings>
+
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+YEAR=$(date +%Y)        
+/skedul/procsked/procscript/bilarm.sh P101 $YEAR
+        ]]>
+    </script>
+
+    <run_time />
+</job>

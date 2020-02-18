@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Export OIL spesa - {cod_ente}">
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/oil-ordinativi.sh {cod_ente} {anno} spesa
+        ]]>
+    </script>
+
+    <run_time >
+        <period  when_holiday="ignore_holiday" single_start="{start_time}"/>
+    </run_time>
+</job>

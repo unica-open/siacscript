@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="PagoPA per REGP" priority="100">
+    <params >
+        <param  name="CODICE_ENTE" value="REGP"/>
+
+        <param  name="LINEA_CLIENTE" value="RP-01"/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+    </params>
+
+    <run_time  let_run="no"/>
+</order>

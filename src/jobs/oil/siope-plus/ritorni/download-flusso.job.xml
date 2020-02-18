@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Download dei Flussi ricevuti dai file zip di UNIIT - Versione parametrizzata per Ente" order="yes" stop_on_error="no" tasks="1">
+    <settings >
+                <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <mail_on_warning ><![CDATA[yes]]></mail_on_warning>
+
+        <mail_on_success ><![CDATA[no]]></mail_on_success>
+
+        <log_mail_to ><![CDATA[servizio.contabilia@csi.it]]></log_mail_to>
+
+        <log_mail_cc ><![CDATA[gianni.sansalvadore@csi.it, raffaela.montuori@csi.it]]></log_mail_cc>
+                    </settings>
+
+    <script  language="shell">
+            <![CDATA[
+            set -e
+            #set -x
+            ENTE=$SCHEDULER_PARAM_ENTE
+            DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+            TIPO_FLUSSO=$SCHEDULER_PARAM_TIPO_FLUSSO
+            COD_FLUSSO_MIF=$SCHEDULER_PARAM_CODICE_MIF_UNIIT
+            DT=$(date +%Y%m%d_%H%M%S)
+            PFX="A_"
+            LINEA_CLIENTE=$SCHEDULER_PARAM_LINEA_CLIENTE
+            OFFSET=$SCHEDULER_PARAM_OFFSET
+
+# la cartella dove sono unzippati i file scaricati
+OUTDIR=/skedul/progetti/siac-int-01/dati/wrk/oil-uniapi/$ENTE
+
+# usa oggi come data di elaborazione se non ne C( stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+        fi
+
+if [ -z "$TIPO_FLUSSO" ]; then
+        echo "Il TIPO di flusso (gdc o emiofe) non e' stato specificato"
+                exit -1
+                fi
+
+# chiama lo script run-oil_uniit per il download del file
+# es: run-oil_uniit_ricevute   INT-01  RPI_OPI "gdc ricsisc" 2017-12-28   /tmp/
+#
+
+
+TMPFOLDER=$(mktemp -du -t uniit.XXXXXXXXX)
+
+
+/skedul/java/siac-mul-01/siacbatch/bin/run-oil_uniit_ricevute $LINEA_CLIENTE $COD_FLUSSO_MIF $TIPO_FLUSSO $DATA_ELABORAZIONE ${TMPFOLDER}/
+
+# verifica se c'e' lo zip
+NUM_FILES=$(ls -1 $TMPFOLDER|wc -l)
+if [ "$NUM_FILES" -eq "0" ]; then
+        exit 0
+fi
+ZIPFILE=$(ls $TMPFOLDER/*)
+
+# si assicura di eliminare ogni file precedente
+rm -rf $OUTDIR/$DATA_ELABORAZIONE
+mkdir -p $OUTDIR
+
+# scompatta lo zip scaricato ed elimina la cartella temporanea
+unzip -o $ZIPFILE $DATA_ELABORAZIONE/* -d $OUTDIR
+rm -rf $TMPFOLDER
+
+# dopo unzippato rinomina i file (forse)
+FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/*)
+
+
+for f in $FILES
+do
+   dir=$(dirname $f)
+   name=$(basename $f)
+   echo "$f --> $dir/$PFX$name"
+ 
+   mv $f $dir/${PFX}${name}
+done
+
+]]>
+    </script>
+
+    <run_time />
+ </job>
+

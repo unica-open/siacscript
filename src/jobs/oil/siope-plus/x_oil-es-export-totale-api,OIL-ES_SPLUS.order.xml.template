@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order >
+    <params >
+        <param  name="ENTE" value="@@ENTE"/>
+    </params>
+
+<run_time when_holiday="ignore_holiday" single_start="23:05"/>
+</order>
+

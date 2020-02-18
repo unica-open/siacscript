@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Ribaltamento vincoli impegni/accertamenti" stop_on_error="no">
+    <settings >
+        <mail_on_error ><![CDATA[no]]></mail_on_error>
+    </settings>
+    <params >
+        <param  name="CODICE_ENTE" value=""/>
+        <param  name="ANNO_BILANCIO" value=""/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+ANNO=$(date +%Y)
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=13-fnc_siac_aggiorna_utilizzabile_acc \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE} \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO_BILANCIO:-$ANNO} \
+  -level=${ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

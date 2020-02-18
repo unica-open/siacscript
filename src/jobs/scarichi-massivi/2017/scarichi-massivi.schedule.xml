@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<schedule  title="Schedulazione scarichi massivi 2017">
+    <period  when_holiday="ignore_holiday" single_start="21:00"/>
+</schedule>

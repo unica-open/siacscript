@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" max_orders="10">
+    <job_chain_node  state="dump_gestione" job="sm_gestione" error_state="error"/>
+<!--
+    <job_chain_node  state="chiusure" job="scarico_massivo_chiusura" error_state="error"/>
+-->
+    <job_chain_node  state="ok"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

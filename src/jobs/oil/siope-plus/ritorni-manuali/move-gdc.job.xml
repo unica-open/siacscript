@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="elaborazione dei Giornali di Cassa ricevuti dai file zip di UNIIT" order="yes" stop_on_error="no">
+    <params >
+        <param  name="ENTE" value=""/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+
+        <param  name="ZIPFILE" value=""/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+set +x
+ENTE=$SCHEDULER_PARAM_ENTE
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+TODAY=$(date +%Y-%m-%d)
+ANNO=$(date +%Y)
+DT=$(date +%Y%m%d_%H%M%S)
+PFX=${ENTE}_${DT}_
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$TODAY
+fi
+
+# file zip da "elaborare"
+ZIPFILE="$SCHEDULER_PARAM_ZIPFILE"
+
+# la cartella dove va unzippato (warning: folder names could clash)
+OUTDIR=/skedul/progetti/siac-int-01/dati/wrk/oil-uniapi/$ENTE
+rm -rf $OUTDIR/$DATA_ELABORAZIONE
+mkdir -p $OUTDIR
+
+# scompatta lo zip scaricato
+unzip -o $ZIPFILE $DATA_ELABORAZIONE/* -d $OUTDIR
+
+# dopo unzippato rinomina i file (forse)
+FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/*_GDC_*.xml)
+for f in $FILES
+do
+        dir=$(dirname $f)
+        name=$(basename $f)
+        echo "$f --> $dir/$PFX$name"
+        # rinomina i file contenuti
+        mv $f $dir/${PFX}${name}
+done
+        ]]>
+    </script>
+
+    <run_time />
+</job>

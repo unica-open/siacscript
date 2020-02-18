@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order >
+    <params >
+        <param  name="ENTE" value="CMTO"/>
+        <param  name="LINEA_CLIENTE" value="CMTO-01"/>
+    </params>
+
+	<run_time when_holiday="ignore_holiday" single_start="20:00"/>
+</order>
+

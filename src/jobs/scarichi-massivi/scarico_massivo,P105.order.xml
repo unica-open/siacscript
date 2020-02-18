@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Scarichi Massivi P105" priority="100">
+    <params >
+        <param  name="ENTE" value="P105"/>
+    </params>
+
+    <run_time  schedule="scarichi-massivi"/>
+</order>

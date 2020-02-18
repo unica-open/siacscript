@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="oil-emettitore-launch">
+    <script  language="shell">
+        <![CDATA[
+echo "About to launch Emettitore"
+/skedul/java/siac-mul-01/siacbatch/bin/run-emettitore RP-01 SIAC-REGP
+echo "launched"
+        ]]>
+    </script>
+
+    <run_time />
+</job>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Dump scarichi masssivi previsione" stop_on_error="no" order="yes" tasks="20">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+    </settings>
+
+    <params >
+        <param  name="ENTE" value="REQUIRED"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+Y=$(date +%Y)
+declare -i YEAR=Y+1
+
+echo "Running Scarichi massivi $SCHEDULER_PARAM_ENTE previsione $YEAR"
+
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh capitolo_spesa $SCHEDULER_PARAM_ENTE $YEAR
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh capitolo_entrata $SCHEDULER_PARAM_ENTE $YEAR
+        ]]>
+    </script>
+
+    <run_time />
+</job>

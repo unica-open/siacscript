@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Scarico 2017" priority="200">
+    <params >
+        <param  name="ENTE" value="P114"/>
+   		<param  name="ANNO" value="2017" />
+	</params>
+
+    <run_time  schedule="scarichi-massivi"/>
+</order>

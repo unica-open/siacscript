@@ -1,0 +1,34 @@
+<param  name="ENTE" value="AIPO"/>
+<param name="LINEA_CLIENTE" value="INT-01_AIPO"/>
+<param  name="CODICE_MIF_UNIIT" value="PRAIPO"/>
+
+<param  name="ENTE" value="ARPEA"/>
+<param name="LINEA_CLIENTE" value="INT-01_ARPEA"/>
+<param name="CODICE_MIF_UNIIT" value="TOAEA03"/>
+
+
+<param  name="ENTE" value="CMTO"/>
+<param name="LINEA_CLIENTE" value="CMTO-01"/>
+<param name="CODICE_MIF_UNIIT" value="CMTO_OPI"/>
+
+<param  name="ENTE" value="CRP"/>
+<param name="LINEA_CLIENTE" value="INT-01_CRP"/>
+<param name="CODICE_MIF_UNIIT" value="TOCR"/>
+
+<param  name="ENTE" value="EDISU"/>
+<param name="LINEA_CLIENTE" value="INT-01_EDISU"/>
+<param name="CODICE_MIF_UNIIT" value="TOEDISU"/>
+
+
+<param  name="ENTE" value="P101"/>
+<param name="LINEA_CLIENTE" value="INT-01_P101"/>
+<param name="CODICE_MIF_UNIIT" value="ALEGAPAP"/>
+
+<param  name="ENTE" value="P102"/>
+<param name="LINEA_CLIENTE" value="INT-01_P102"/>
+<param name="CODICE_MIF_UNIIT" value="ALPFPO"/>
+
+
+<param  name="ENTE" value="REGP"/>
+<param name="LINEA_CLIENTE" value="RP-01"/>
+<param name="CODICE_MIF_UNIIT" value="RP_OPI"/>

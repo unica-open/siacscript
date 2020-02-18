@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<schedule  title="OIL - ES - schedulazione spazio">
+	<period  single_start="22:00" when_holiday="ignore_holiday"/>
+</schedule>

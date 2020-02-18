@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Import OIL AIPO" priority="10">
+    <params >
+        <param  name="ENTE" value="AIPO"/>
+    </params>
+
+    <run_time  schedule="oil-ritorni-import"/>
+</order>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Download ed Import dei flussi EMIOFE (siope+) via UNIIT API">
+    <params >
+            <param  name="ENTE" value="P102" />
+
+       <param  name="DATA_ELABORAZIONE" value=""/>
+
+        <param  name="OFFSET" value="0 days"/>
+
+        <param  name="CODICE_FLUSSO" value="RICFIMIF"/>
+
+        <param  name="TIPO_FLUSSO" value="ricsisc"/>
+
+        <param  name="LINEA_CLIENTE" value="INT-01_P102"/>
+
+        <param  name="CODICE_MIF_UNIIT" value="ALPFPO"/>
+            </params>
+
+    <run_time when_holiday="ignore_holiday" single_start="07:00"/>
+</order>
+    

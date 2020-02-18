@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="scarico massivo singolo" stop_on_error="no" order="no">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+    </settings>
+
+    <params >
+        <!-- - capitolo_entrata
+- capitolo_spesa			
+		&lt;param  name=&quot;ENTITA&quot; value=&quot;&quot;/&gt; -->
+        <param  name="ANNO" value="2017"/>
+
+        <param  name="ENTE" value=""/>
+    </params>
+
+    <!-- &lt;run_time  let_run=&quot;yes&quot; once=&quot;yes&quot; begin=&quot;21:00&quot;&gt;
+        &lt;period  single_start=&quot;21:00&quot; when_holiday=&quot;ignore_holiday&quot;/&gt;
+    &lt;/run_time&gt; -->
+    <script  language="shell">
+        <![CDATA[
+echo "Scarico massivo di [${SCHEDULER_PARAM_ENTITA}] per l'ente: ${SCHEDULER_PARAM_ENTE} ${SCHEDULER_PARAM_ANNO}"
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh capitolo_entrata $SCHEDULER_PARAM_ENTE $SCHEDULER_PARAM_ANNO
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh capitolo_spesa $SCHEDULER_PARAM_ENTE $SCHEDULER_PARAM_ANNO
+        ]]>
+    </script>
+
+    <run_time />
+</job>

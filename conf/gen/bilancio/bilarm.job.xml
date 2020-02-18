@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Bilancio armonizzato {anno} {cod_ente}">
+    <params />
+
+    <script  language="shell">
+        <![CDATA[
+/skedul/procsked/procscript/bilarm.sh	\
+	{cod_ente}                                          \
+	{anno}
+        ]]>
+    </script>
+</job>

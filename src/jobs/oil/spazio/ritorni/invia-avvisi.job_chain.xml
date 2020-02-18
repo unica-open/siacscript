@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" max_orders="1" title="Invia gli avvisi di quietanze via email">
+    <job_chain_node  state="send" job="oil-q-invia-mail" error_state="error" on_error="setback"/>
+
+    <job_chain_node  state="ok"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

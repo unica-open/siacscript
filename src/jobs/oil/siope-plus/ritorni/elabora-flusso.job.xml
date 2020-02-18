@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  tasks="1" title="elaborazione del Giornale di Cassa  ricevuto dai file zip di UNIIT" order="yes" stop_on_error="no">
+<!-- funny job to move or rename files in an absolutly useless way. -->
+
+    <params >
+        <param  name="ENTE" value=""/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+# invoca il job pentaho per l'import delle firme
+###################################################
+
+ENTE=$SCHEDULER_PARAM_ENTE
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+CODICE_FLUSSO=$SCHEDULER_PARAM_CODICE_FLUSSO
+OFFSET=$SCHEDULER_PARAM_OFFSET
+
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+	DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+fi
+
+ANNO=$(echo "$DATA_ELABORAZIONE" | cut -d'-' -f1)
+ETL_SRC=/skedul/etl_open/siac-int-01/siacetlbo/ordinativoInformatico/
+
+echo "run-mif-siopeplus-xxxx.kjb $ENTE $ANNO $DATA_ELABORAZIONE $CODICE_FLUSSO"
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_SRC/ritorni/run-mif-siopeplus-xxxx.kjb \
+    -level=Basic  \
+    -param:codice_ente=$ENTE                    \
+    -param:anno_bilancio=$ANNO					\
+    -param:data_elaborazione=$DATA_ELABORAZIONE \
+	-param:codice_tipo_flusso=$CODICE_FLUSSO
+        ]]>
+    </script>
+
+    <run_time />
+</job>

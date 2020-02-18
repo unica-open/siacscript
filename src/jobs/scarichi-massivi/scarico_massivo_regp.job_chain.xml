@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<!-- &lt;job_chain_node  state=&quot;chiusura&quot; job=&quot;chiusura/sm_chiusura&quot; error_state=&quot;error&quot;/&gt; -->
+<job_chain  orders_recoverable="no" visible="yes" title="Scarico massivo per REGP comprende gestione e  previsione" max_orders="1">
+    <job_chain_node  state="gestione" job="gestione/sm_gestione" error_state="error"/>
+<!--
+    <job_chain_node  state="previsione" job="previsione/sm_previsione" error_state="error"/>
+-->
+    <job_chain_node  state="ok"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

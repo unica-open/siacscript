@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="Elimina ordinativi vecchi" order="no" stop_on_error="no">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+
+        <log_level ><![CDATA[debug9]]></log_level>
+    </settings>
+
+    <description >
+        <include  file="/appserv/jobscheduler/bilancio/jobs/JobSchedulerRemoveFile.xml"/>
+    </description>
+
+    <!-- parametro usato solo dalla versione 1.9 in poi -->
+    <params >
+        <param  name="remove_dir" value="true"/>
+
+        <param  name="recursive" value="true"/>
+
+        <param  name="file" value="/skedul/progetti/siac-int-01/dati/oil"/>
+
+        <param  name="min_file_age" value="48:00:00"/>
+    </params>
+
+    <script  language="java" java_class="sos.scheduler.file.JobSchedulerRemoveFile"/>
+
+    <run_time />
+</job>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Download ed Import dei GDC (siope+) via UNIIT API" priority='50'>
+    <params >
+        <param  name="ENTE" value="AIPO"/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+        <param name="OFFSET" value="-1 days"/>
+
+        <param  name="CODICE_FLUSSO" value="GIOCASSA"/>
+
+        <param  name="TIPO_FLUSSO" value="gdc"/>
+
+        <param name="LINEA_CLIENTE" value="INT-01_AIPO"/>
+
+        <param  name="CODICE_MIF_UNIIT" value="PRAIPO"/>
+
+
+    </params>
+
+<run_time when_holiday="ignore_holiday" single_start="09:15"/>
+</order>
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<order  title="Import OIL CRP" priority="10">
+    <params >
+        <param  name="ENTE" value="CRP"/>
+    </params>
+
+    <run_time  schedule="oil-ritorni-import"/>
+</order>

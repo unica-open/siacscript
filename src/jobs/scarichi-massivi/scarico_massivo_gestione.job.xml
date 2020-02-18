@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job  title="scarico massivo full" stop_on_error="yes" tasks="20">
+    <settings >
+        <mail_on_error ><![CDATA[yes]]></mail_on_error>
+
+        <log_mail_to ><![CDATA[@job.settings.log_mail_to@]]></log_mail_to>
+
+        <log_mail_cc ><![CDATA[@job.settings.log_mail_cc@]]></log_mail_cc>
+    </settings>
+
+    <params >
+        <param  name="ENTE" value="UNSPECIFIED"/>
+
+        <param  name="ANNO" value="REQUIRED"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+echo "Running scarico massivo ente: $SCHEDULER_PARAM_ENTE PSEUDO FULL $SCHEDULER_PARAM_ANNO"
+
+/skedul/procsked/procscript/scaricoPerTipoEnteAnno.sh gestione $SCHEDULER_PARAM_ENTE $SCHEDULER_PARAM_ANNO
+        ]]>
+    </script>
+
+    <run_time >
+        <date  date="2017-02-02">
+            <period  when_holiday="ignore_holiday" single_start="19:00"/>
+        </date>
+    </run_time>
+</job>

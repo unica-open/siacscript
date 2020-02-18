@@ -1,0 +1,42 @@
+
+<job  stop_on_error="no" title="Allineamento stanziamenti residuo/cassa su bilancio di previsione">
+    <settings >
+        <mail_on_error ><![CDATA[no]]></mail_on_error>
+    </settings>
+
+    <params >
+        <param  name="CODICE_ENTE" value=""/>
+
+        <param  name="ANNO_BILANCIO" value=""/>
+
+                <param name='O1_ELEM_TIPO_CODE_PREV' value='' />
+                <param name='O2_ELEM_TIPO_CODE_GEST' value='' />
+                <param name='O3_CALCOLO_RES' value='' />
+                <param name='O4_CALCOLO_CASSA' value='' />
+                <param name='O5_RES_CALCOLATO' value='' />
+                <param name='O6_AGGIORNA_STANZ' value='' />
+
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+ANNO=$(date +%Y)
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=10-calc-stanziamento-residuo                                             \
+  -param:codice_ente=${SCHEDULER_PARAM_CODICE_ENTE}                                        \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO_BILANCIO:-$ANNO}                             \
+\
+  -param:p10_elem_tipo_code=$SCHEDULER_PARAM_O1_ELEM_TIPO_CODE_PREV                        \
+  -param:p10_elem_tipo_code_prev=$SCHEDULER_PARAM_O2_ELEM_TIPO_CODE_GEST                   \
+  -param:p10_calcolo_res=$SCHEDULER_PARAM_O3_CALCOLO_RES                                   \
+  -param:p10_calcolo_cassa=$SCHEDULER_PARAM_O4_CALCOLO_CASSA                               \
+  -param:p10_res_calcolato=$SCHEDULER_PARAM_O5_RES_CALCOLATO                               \
+  -param:p10_aggiorna_stanz=$SCHEDULER_PARAM_O6_AGGIORNA_STANZ                             \
+\
+  -level=${ETL_LOGLEVEL:-Detailed}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

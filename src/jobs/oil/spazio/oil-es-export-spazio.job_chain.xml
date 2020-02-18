@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" max_orders="1">
+    <job_chain_node  state="entrata" job="export-entrata" error_state="error" />
+
+    <job_chain_node  state="spesa" job="export-spesa" error_state="error"/>
+
+    <job_chain_node  state="end"/>
+    <job_chain_node  state="error"/>
+</job_chain>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="yes" visible="yes">
+    <job_chain_node  state="download" job="download-flusso"/>
+
+    <job_chain_node  state="import" job="elabora-flusso"/>
+
+    <job_chain_node  state="fine"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>
+

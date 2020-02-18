@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<job  title="elaborazione dei tracciati EMIOFE ricevuti dai file zip di UNIIT" order="yes" stop_on_error="no" >
+<!-- funny job to move or rename files in an absolutly useless way. -->
+
+    <params >
+        <param  name="ENTE" value=""/>
+
+        <param  name="DATA_ELABORAZIONE" value=""/>
+
+        <param name='ANNO' value=''/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+# invoca il job pentaho per l'import delle firme
+###################################################
+
+ENTE=$SCHEDULER_PARAM_ENTE
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+ANNO=$SCHEDULER_PARAM_ANNO
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+	DATA_ELABORAZIONE=$TODAY
+fi
+
+# deduce l'anno di bilancio dalla data di elaborazione
+if [ -z "$ANNO" ]; then
+    ANNO=$(echo "$DATA_ELABORAZIONE" | cut -d'-' -f1)
+fi
+
+
+ETL_SRC=/skedul/etl_open/siac-int-01/siacetlbo/ordinativoInformatico/
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_SRC/ritorni/run-mif-siopeplus-xxxx.kjb \
+        -level=Detailed                             \
+        -param:codice_ente=$ENTE                    \
+        -param:anno_bilancio=$ANNO					\
+        -param:data_elaborazione=$DATA_ELABORAZIONE \
+	-param:codice_tipo_flusso=RICFIMIF
+        ]]>
+    </script>
+
+    <run_time />
+</job>

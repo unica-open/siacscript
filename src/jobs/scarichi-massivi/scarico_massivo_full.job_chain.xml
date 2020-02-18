@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<job_chain  orders_recoverable="no" visible="yes" title="Scarico massivo che comprende chiusura, gestione, previsione" max_orders="10">
+    <job_chain_node  state="chiusura" job="chiusura/sm_chiusura" error_state="error"/>
+
+    <job_chain_node  state="gestione" job="gestione/sm_gestione" error_state="error"/>
+
+    <job_chain_node  state="previsione" job="previsione/sm_previsione" error_state="error"/>
+
+    <job_chain_node  state="ok"/>
+
+    <job_chain_node  state="error"/>
+</job_chain>

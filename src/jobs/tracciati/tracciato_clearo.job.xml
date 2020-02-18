@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<job  title="Elaborazione Tracciato Clearo">
+    <params >
+        <param  name="ENTE" value=""/>
+
+        <param  name="ANNO" value=""/>
+
+        <param  name="ANNO_PROVV" value=""/>
+		
+        <param  name="ETL_LOGLEVEL" value="Basic"/>
+    </params>
+
+    <script  language="shell">
+        <![CDATA[
+export ETL_PROD=/skedul/etl_open/siac-int-01/siacetlbo
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_PROD/tracciato/run_tracciato_clearo.kjb \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO}\
+  -param:anno_provv=${SCHEDULER_PARAM_ANNO_PROVV}\
+  -param:codice_ente=${SCHEDULER_PARAM_ENTE}\
+  -level=${SCHEDULER_PARAM_ETL_LOGLEVEL:-Basic}
+        ]]>
+    </script>
+
+    <run_time />
+</job>

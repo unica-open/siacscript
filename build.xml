@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!--
+SPDX-FileCopyrightText: Copyright 2020 | CSI Piemonte
+SPDX-License-Identifier: EUPL-1.2
+-->
 <!-- ##################################################### -->
 <!-- # Copyright 2006 (c) CSI Piemonte.                  # -->
 <!-- #                                                   # -->
@@ -13,143 +16,257 @@
 
 
 <project xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
-         basedir="."
-         default="distribution"
-         name="siacscript">
+		basedir="."
+		default="distribution"
+		name="siacscript">
 
-    <description>Build file per la componente : [siacscript]</description>
+	<description>Build file per la componente : [siacscript]</description>
 
-    
-    <property file="buildfiles/build.properties"/>
+	<property file="buildfiles/build.properties" />
 	
-    <!-- ############################################################# -->
-    <!-- # Target: init                                              # -->
-    <!-- ############################################################# -->
-    <target name="init" description="Inizializza lo script Ant.">
-        <tstamp/>
-        <!-- se non specificato da riga di comando usa l'ambiente local -->
-        <property name="target" value="local"/>
-        <property name="target.dir" location="target/${target}"/>
-        <property name="archives.dir" location="${target.dir}/archives"/>		
+	<!-- ################ -->
+	<!-- # Target: init # -->
+	<!-- ################ -->
+	<target name="init" description="Inizializza lo script Ant.">
+		<tstamp />
+		<!-- se non specificato da riga di comando usa l'ambiente local -->
+		<property name="target" value="local" />
+		<property name="target.dir" location="target/${target}" />
+		<property name="archives.dir" location="${target.dir}/archives" />
+		<property name="archives.dir.temp" location="${target.dir}/archives/temp" />
 		
-        <!-- crea l'alberatura -->
-        <mkdir dir="${archives.dir}"/>
-		<mkdir dir="${dist}"/>
+		<!-- crea l'alberatura -->
+		<mkdir dir="${archives.dir}" />
+		<mkdir dir="${archives.dir.temp}" />
+		<mkdir dir="${dist}" />
 		
 		<!-- carica le properties per l'ambiente -->
-		<property file="buildfiles/${target}.properties"/>
-    </target>
+		<property file="buildfiles/${target}.properties" />
+	</target>
 
 
-    <!-- Copia tutte le risorse -->
-    <target name="process-resources" depends="init">
-	
-        <!-- copia le risorse non filtrate -->
-        <copy todir="${target.dir}/${componente}">			
-            <fileset dir="${script}">
-            </fileset>			
-			<filterchain>
-				<fixcrlf eol='unix' />
-			</filterchain>
-        </copy>
-		
-        <copy todir="${target.dir}/${componente}-jobs">
-            <fileset dir="${job}" />
-			<filterchain>
-				<fixcrlf eol='unix' />
-				<replacetokens>
-					<token key='job.settings.log_mail_to' value='${job.settings.log_mail_to}'/>
-					<token key='job.settings.log_mail_cc' value='${job.settings.log_mail_cc}'/>
-					<token key='atti.cmto.mail_to' value='${atti.cmto.mail_to}'/>
-				</replacetokens>
-			</filterchain>
-		</copy>
 
-    </target>
-
-	<!-- assembla in tar di installazione della componente per la VM di schedulazione.
+	<!-- copia le risorse e assembla in tar di installazione della componente per la VM di schedulazione.
 		NOTA: il path prefix delle cartelle contenute è relativo alla home dell'utente di schedulazione (skedul) e rispecchia
 		l'alberatura standard delle cartelle per l'ambiente di schedulazione -->
-    <target name="-assemble-tar" depends="init, process-resources">
-        <tar tarfile="${archives.dir}/${dist-file-name}.tar" longfile='gnu'>
+		
+	<target name="process_resources-assemble-tar" depends="init">
 
-            <tarfileset dir="${target.dir}/${componente}/procscript" includes='**'
-					filemode='755'
-					prefix="procsked/procscript" 
-					preserveLeadingSlashes='true'>
-            </tarfileset>
-			
-			<tarfileset dir='${target.dir}/${componente}-jobs'
-					prefix="progetti/siac-int-01/temp-jobs" 
-					preserveLeadingSlashes='true'>
-			</tarfileset> 
-            
-        <!--
-            <tarfileset dir="${target.dir}/${componente}" excludes='/programmi/**'
-					prefix="/skedul/procsked/procscript" 
-					preserveLeadingSlashes='true'>
-            </tarfileset>
-			-->
-		<!--
-            <zipfileset dir="${target.dir}/${componente}" fullpath="/skedul/progetti/siac-int-01/">
-            </zipfileset>			
-		-->
-        </tar>
+		<make-batch name="RPBIAB000-1" />
+		<make-batch name="PVBIAB000-1" />
+		<make-batch name="INBIAB000-1" />
+		<make-batch name="RPBIIM000-1" />
+		<make-batch name="PVBIIM000-1" />
+		<make-batch name="INBIIM000-1" />
+		<make-batch name="INBIIM000-2" />
+		<make-batch name="INBIIM000-3" />
+		<make-batch name="INBIIM000-4" />
+		<make-batch name="INBIIM000-5" />
+		<make-batch name="RPBIPP000-1" />
+		<make-batch name="PVBIPP000-1" />
+		<make-batch name="RPBIAA000-1" />
+		<make-batch name="PVBIAA000-1" />
+		<make-batch name="INBIAA000-1" />
+		<make-batch name="INBIBA000-1" />
 				
-    </target>
-	
-    <target name="package" depends="init, process-resources, -assemble-tar">
-    </target>
-	
-    <target name="distribution" depends="package, -assemble-tar">
-        <!-- copia i tar nella usuale cartella dist -->
-        <copy todir='${dist}/${target}'>
-            <fileset dir="${archives.dir}" includes="*.*"/>
-        </copy>
-    </target>
+		<!-- INBITR200-1 tracciati<make-batch name="clean_files -->
+		<make-batch name="INBITR200-1" />
+		
+		<!-- RPBIPS000-1 PagoPa svecchia-->
+		<make-batch name="RPBIPS000-1" />
+		
+		<!-- PVBIDU000-1 aggiorna dati durc-->
+		<make-batch name="PVBIDU000-1" />
+		
+		<!-- INBIFA000-1 -> INBIFA000-17 Batch a richiesta Fasi di Bilancio-->
+		<make-batch name="INBIFA000-1" />
+		<make-batch name="INBIFA000-2" />
+		<make-batch name="INBIFA000-3" />
+		<make-batch name="INBIFA000-4" />
+		<make-batch name="INBIFA000-5" />
+		<make-batch name="INBIFA000-6" />
+		<make-batch name="INBIFA000-7" />
+		<make-batch name="INBIFA000-8" />
+		<make-batch name="INBIFA000-9" />
+		<make-batch name="INBIFA000-10" />
+		<make-batch name="INBIFA000-11" />
+		<make-batch name="INBIFA000-12" />
+		<make-batch name="INBIFA000-13" />
+		<make-batch name="INBIFA000-14" />
+		<make-batch name="INBIFA000-15" />
+		<make-batch name="INBIFA000-16" />
+		<make-batch name="INBIFA000-17" />
 
-    <!-- -->
-    <!-- ############################################################# -->
-    <!-- # [CLEAN]: clean                                            # -->
-    <!-- ############################################################# -->
-    <!-- -->
-    <target name="clean" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="init">
-        <delete dir="target" verbose="n"/>
-    </target>
+		<!-- scarichi massivi full -->
+		<make-batch name="INBISM000-1" />
+		<make-batch name="INBISM000-2" />
+		<make-batch name="INBISM000-3" />
+		<make-batch name="INBISM000-4" />
+		<make-batch name="INBISM000-5" />
+		<make-batch name="PVBISM000-1" />
+		<make-batch name="RPBISM000-1" />
+		
+		<!-- scarichi-massivi/clean_old_files -->
+		<make-batch name="INBICF000-1" />
+
+		<!-- oil -->
+		<make-batch name="RPBIOE000-1" />
+		<make-batch name="RPBIOE100-1" />
+		<make-batch name="PVBIOE000-1" />
+		<make-batch name="PVBIOE100-1" />
+		<make-batch name="INBIOE000-1" />
+		<make-batch name="INBIOE000-2" />
+		<make-batch name="INBIOE000-3" />
+		<make-batch name="INBIOE000-4" />
+		<make-batch name="INBIOE000-5" />
+		
+		<make-batch name="RPBIOG000-1" />
+		<make-batch name="RPBIOG000-2" />
+		<make-batch name="RPBIOG100-1" />
+		<make-batch name="PVBIOG000-1" />
+		<make-batch name="PVBIOG000-2" />
+		<make-batch name="PVBIOG100-1" />
+		<make-batch name="INBIOG000-1" />
+		<make-batch name="INBIOG000-2" />
+		<make-batch name="INBIOG000-3" />
+		<make-batch name="INBIOG000-4" />
+		<make-batch name="INBIOG000-5" />
+
+		<make-batch name="RPBIGS000-1" />
+
+		<make-batch name="RPBIOX000-1" />
+		<make-batch name="PVBIOX000-1" />
+		<make-batch name="INBIOX000-1" />
+		<make-batch name="INBIOX000-2" />
+		<make-batch name="INBIOX000-3" />
+		<make-batch name="INBIOX000-4" />
+		<make-batch name="INBIOX000-5" />
+
+		<make-batch name="RPBIOR000-1" />
+		<make-batch name="PVBIOR000-1" />
+		<make-batch name="INBIOR000-1" />
+		<make-batch name="INBIOR000-2" />
+		<make-batch name="INBIOR000-3" />
+		<make-batch name="INBIOR000-4" />
+		<make-batch name="INBIOR000-5" />
+
+		<!-- oil a richiesta con inserimento parametri-->
+		<make-batch name="INBIOE100-1" />
+		<make-batch name="INBIOG100-1" />
+
+		<!-- tr. 770 -->
+		<make-batch name="INBITR000-1" />
+		<make-batch name="INBITR000-2" />
+		<make-batch name="INBITR000-3" />
+		<make-batch name="INBITR000-4" />
+		<make-batch name="INBITR000-5" />
+		<make-batch name="PVBITR000-1" />
+		<make-batch name="RPBITR000-1" />
+		<make-batch name="INBITR100-1" />
+		<make-batch name="INBITR100-2" />
+		<make-batch name="INBITR100-3" />
+		<make-batch name="INBITR100-4" />
+		<make-batch name="INBITR100-5" />
+		<make-batch name="PVBITR100-1" />
+		<make-batch name="RPBITR100-1" />
+
+		<!-- cleanup stampe -->
+		<make-batch name="INBICS000-1" />
+		<make-batch name="RPBICS000-1" />
+		
+		<!-- pulizie generali -->
+		<make-batch name="RPBIPU000-1" />
+		<make-batch name="PVBIPU000-1" />
+		<make-batch name="INBIPU000-1" />
+		
+		<!-- ribaltamento progetti/cronoprogrammi -->
+		<make-batch name="RPBIPC000-1" />
+		<make-batch name="PVBIPC000-1" />
+		<make-batch name="INBIPC000-1" />
+		<make-batch name="INBIPC000-2" />
+
+		<!-- IQS2 -->
+		<make-batch name="PVBIIQ000-1" />
+		<make-batch name="PVBIIQ000-2" />
+		<make-batch name="PVBIIQ000-999" />
+
+		
+		
+	</target>
+
+	<macrodef name="make-batch">
+		<attribute name="name" />
+		<sequential>
+			<copy todir="${target.dir}/@{name}">
+				<fileset dir="${script}/@{name}" />
+				<filterchain>
+					<fixcrlf eol='unix' />
+					<replacetokens>
+						<token key='FPATHDIR' value='${fpath.command}' />
+						<token key='ETL_PROD' value='${etl.prod}' />
+					</replacetokens>
+	                <expandproperties />
+				</filterchain>
+			</copy>
+			
+			<echo> Assembling tar @{name}</echo>
+
+			<tar tarfile="${archives.dir.temp}/@{name}-${product-version}.tar" longfile='gnu'>
+				<tarfileset dir="${target.dir}/@{name}" includes='**/**'
+						filemode='755'
+						prefix=""
+						preserveLeadingSlashes='true'/>
+			</tar>
+		
+		</sequential>
+	</macrodef>
+	
+	<target name="package" depends="init, process_resources-assemble-tar">
+		<tar tarfile="${archives.dir}/siacscript-${product-version}.tar" longfile='gnu'>
+			<tarfileset dir="${archives.dir.temp}" includes='**/**'
+						filemode='755'
+						prefix="" 
+						preserveLeadingSlashes='true' />
+		</tar>
+	</target>
+	
+	<target name="distribution" depends="package">
+		<!-- copia i tar nella usuale cartella dist -->
+		<copy todir='${dist}/${target}'>
+			<fileset dir="${archives.dir}" includes="*.*"/>
+		</copy>
+	</target>
+
+	<!-- ################## -->
+	<!-- # [CLEAN]: clean # -->
+	<!-- ################## -->
+	<target name="clean" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="init">
+		<delete dir="target" verbose="n"/>
+	</target>
 
 	<!-- solo un alias per clean -->
-    <target name="clean-all" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="clean">
-    </target>
+	<target name="clean-all" description="Rimuove tutti i prodotti del build (in pratica la cartella build)" depends="clean" />
 	
-    <!-- -->
-    <!-- ############################################################# -->
-    <!-- # Target: about                                             # -->
-    <!-- ############################################################# -->
-    <!-- -->
-    <target name="about" description="Visualizza l'elenco dei target
-                                    pubblici dello script.">
+	<!-- ################# -->
+	<!-- # Target: about # -->
+	<!-- ################# -->
+	<target name="about" description="Visualizza l'elenco dei target pubblici dello script.">
 
-        <loadproperties srcfile="buildfiles/build.properties"/>
-        <loadfile property="about" srcfile="buildfiles/about.txt"/>
-        <echo message="${about}"/>
-    </target>
+		<loadproperties srcfile="buildfiles/build.properties"/>
+		<loadfile property="about" srcfile="buildfiles/about.txt"/>
+		<echo message="${about}"/>
+	</target>
 
-    <!-- -->
-    <!-- ############################################################# -->
-    <!-- # Target: about-custom                                      # -->
-    <!-- ############################################################# -->
-    <!-- -->
-    <target name="about-custom"
-            description="Visualizza l'elenco di tutti i target,
-                       pubblici e privati
-                       (equivalente a 'ant -projecthelp')">
-
-        <loadproperties srcfile="buildfiles/build.properties"/>
-        <loadfile property="about-custom" srcfile="buildfiles/about-custom.txt"/>
-        <echo message="${about-custom}"/>
-        <java classname="org.apache.tools.ant.Main">
-            <arg value="-projecthelp"/>
-        </java>
-    </target>
+	<!-- ############################################################# -->
+	<!-- # Target: about-custom                                      # -->
+	<!-- ############################################################# -->
+	<target name="about-custom" description="Visualizza l'elenco di tutti i target, pubblici e privati (equivalente a 'ant -projecthelp')">
+		<loadproperties srcfile="buildfiles/build.properties"/>
+		<loadfile property="about-custom" srcfile="buildfiles/about-custom.txt"/>
+		<echo message="${about-custom}"/>
+		<java classname="org.apache.tools.ant.Main">
+			<arg value="-projecthelp"/>
+		</java>
+	</target>
 
 </project>

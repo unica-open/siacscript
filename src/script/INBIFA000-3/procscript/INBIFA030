@@ -1,0 +1,32 @@
+#------------------------------------------#
+# STEP 01
+#------------------------------------------#
+
+ECHO "Esecuzione Apertura bilancio di gestione definitivo per ente: $CODICE_ENTE"
+#ANNO=$(date +%Y)
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=2e3-apertura-bilancio-gestione \
+  -param:tipo_bilancio=$FASE_BILANCIO \
+  -param:codice_ente=$CODICE_ENTE \
+  -param:anno_bilancio=$ANNO_BILANCIO \
+  -param:step_partenza=$STEP_PARTENZA \
+  -param:checkPrevious=$CHECK_PREV \
+  -param:setImporti=$SET_IMPORTI \
+  -level=${ETL_LOGLEVEL:-Detailed}
+
+
+
+############
+
+# if [ $? -ne 0 ]; then
+  (
+     sleep 10;
+     log=$(ls -1 /skedul/progetti/siac/dati/log/${1}*.log)
+     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+     cp $log $logcp
+     gzip $logcp
+     echo -n | mail -a ${logcp}.gz -s "Log job $1" servizio.contabilia@csi.it
+     rm -f ${logcp}.gz
+   ) &
+# fi
+

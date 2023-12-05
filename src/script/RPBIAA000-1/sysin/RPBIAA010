@@ -1,0 +1,4 @@
+export ETL_PROD=@ETL_PROD@
+
+export COD_PRODUCER=atm-rp-01
+export CODICE_ENTE=REGP

@@ -1,0 +1,8 @@
+export SCHEDULER_PARAM_ENTE=REGP
+
+
+
+export MYHOME=/skedul/java/siac/siacbatch
+export JAVA_HOME=/opt/jdk1.8.0_112
+
+JAVA_PATH=$MYHOME/bin

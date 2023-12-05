@@ -1,0 +1,11 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/cleanups/stampe-cleanup.kjb	\
+	-param:codice_ente=$SCHEDULER_PARAM_ENTE											\
+	-level=Detailed
+
+
+#END

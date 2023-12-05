@@ -1,0 +1,18 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+# find /interscambio_nivola/skedul/siac/out/amco /skedul/progetti/siac/dati/out/amco -type f -mtime +2 -exec rm {} \;
+
+
+echo Lancio run_amco.kjb con parametri anno_bilancio=$ANNO codice_ente=${SCHEDULER_PARAM_ENTE} ord_tipo=$ORD_TIPO data_elab=$DATA_ELAB level=$ETL_LOG_LEVEL
+
+  /appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/amco/run_amco.kjb \
+    -param:anno_bilancio=$ANNO \
+    -param:codice_ente=${SCHEDULER_PARAM_ENTE} \
+    -param:ord_tipo=$ORD_TIPO \
+    -param:data_elab=$DATA_ELAB  \
+    -level=$ETL_LOG_LEVEL
+
+
+#END

@@ -4,7 +4,7 @@
 <job  title="Invoca il batch per PCC {cod_ente}">
     <script  language="shell">
         <![CDATA[
-/skedul/java/siac-mul-01/siacbatch/bin/run-pcc.sh {cod_ente}
+/skedul/java/siac/siacbatch/bin/run-pcc.sh {cod_ente}
         ]]>
     </script>
 

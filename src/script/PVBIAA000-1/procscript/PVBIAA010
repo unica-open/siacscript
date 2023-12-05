@@ -1,0 +1,34 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+sed   -e "s/à/a'/g" -e "s/ì/i'/g"  -e "s/[èé]/e'/g"  -e "s/ò/o'/g"  -e "s/ù/u'/g"  \
+      -e "s/\xC2\xA0/  /g"  \
+      -e "s/\xC2\xBF/E./g"  \
+      -e "s/\xC2\xB0/^/g"   \
+      -i /interscambio_nivola/skedul/$COD_PRODUCER/out/per-siac/attiAmministrativi/*.txt
+
+ECHO Lancio etl run-atti_amministrativi.kjb
+
+$KETTLE_DIR/kitchen.sh                              \
+        -file=$ETL_PROD/attiAmministrativi/etl/run-atti_amministrativi.kjb    \
+        -level=${PLOGLEVEL:-Detailed}                                           \
+        -param:cod_producer=$COD_PRODUCER                                    \
+        -param:codice_ente=$CODICE_ENTE
+
+
+
+############
+
+if [ $? -ne 0 ]; then
+  (
+     sleep 10;
+     log=$(ls -1 /skedul/progetti/siac/dati/log/${1}*.log)
+     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+     cp $log $logcp
+     gzip $logcp
+     echo -n | mail -a ${logcp}.gz -s "Log job $1" servizio.contabilia@csi.it
+     rm -f ${logcp}.gz
+   ) &
+fi
+

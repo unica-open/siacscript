@@ -1,0 +1,29 @@
+#------------------------------------------#
+# STEP 01
+#------------------------------------------#
+
+ECHO "Esecuzione Apertura - Reimputazioni Impegni Accertamenti per ente: $CODICE_ENTE"
+#ANNO=$(date +%Y)
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=14-fnc_fasi_bil_gest_reimputa \
+  -param:codice_ente=$CODICE_ENTE \
+  -param:anno_bilancio=$ANNO_BILANCIO \
+  -param:p14_movgest_tipo_code=$MOVGEST_TIPO_CODE \
+  -param:p14_imposta_provvedim=$IMPOSTA_PROVVEDIM \
+  -level=${ETL_LOGLEVEL:-Detailed}
+
+
+############
+
+# if [ $? -ne 0 ]; then
+  (
+     sleep 10;
+     log=$(ls -1 /skedul/progetti/siac/dati/log/${1}*.log)
+     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+     cp $log $logcp
+     gzip $logcp
+     echo -n | mail -a ${logcp}.gz -s "Log job $1" servizio.contabilia@csi.it
+     rm -f ${logcp}.gz
+   ) &
+# fi
+

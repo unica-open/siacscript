@@ -1,0 +1,17 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+
+SCHEDULER_PARAM_ANNO=2017
+SCHEDULER_PARAM_ANNO_PROVV=2017
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/tracciato/run_tracciato_clearo.kjb \
+  -param:anno_bilancio=${SCHEDULER_PARAM_ANNO}   \
+  -param:anno_provv=${SCHEDULER_PARAM_ANNO_PROVV}   \
+  -param:codice_ente=${SCHEDULER_PARAM_ENTE} \
+  -level=Detailed
+
+
+#END
+

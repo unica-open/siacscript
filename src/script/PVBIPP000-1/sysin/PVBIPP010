@@ -1,0 +1,8 @@
+export MYHOME=/skedul/java/siac/siacbatch
+export JAVA_HOME=/opt/jdk1.8.0_112
+export JAVA_PATH=$MYHOME/bin
+export ETL_PROD=@ETL_PROD@
+
+export PAR_LINEA_CLIENTE=CMTO-01
+export CODICE_ENTE_JAVA=SIAC-CMTO
+export CODICE_ENTE=CMTO

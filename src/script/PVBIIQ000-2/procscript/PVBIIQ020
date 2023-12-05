@@ -1,0 +1,17 @@
+export PGPASSWORD=${siac_cmto_password}
+
+cat<<_EOQ_ | /bin/psql --single-transaction ${siac_db_cmto_conn}
+
+SELECT fnc_dba_azione_richiesta_clean('1 MONTH');
+
+_EOQ_
+
+
+
+
+
+siac.fnc_pagopa_iqs2_provvisori_associa_sac(enteProprietarioId, loginOperazione, now())
+
+siac.fnc_pagopa_provvisori_associa_sac(enteProprietarioId, loginOperazione, now())
+
+

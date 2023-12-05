@@ -1,0 +1,42 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+#Procscript
+
+echo "Avvio aggiorna dati DURC"
+
+CODICE_ENTE=CMTO
+
+[ -z $CODICE_ENTE ] && echo "ERRORE: valorizzare il codice ente" && exit 1
+
+IN_DIR=/interscambio_nivola/skedul/siac/in/eope
+ARCH_DIR=/skedul/archivio/siac/durc
+
+mkdir -p $ARCH_DIR
+
+ls -1 $IN_DIR/*$CODICE_ENTE*.json | while read f
+do 
+	echo "Inizio elaborazione file $f"
+	
+	$JAVA_HOME/bin/java -cp .:$MYHOME/config/$PAR_LINEA_CLIENTE:$MYHOME/lib/siacbatch.jar    \
+			it.csi.siac.siacbatch.main.SiacBatchLauncher \
+	   --batch DURC                                                        \
+	   --codice_ente SIAC-$CODICE_ENTE                                     \
+	   --json $f   
+	
+    [ $? = "1" ] && echo "ERRORE: elaborazione file $f" && continue
+	
+	FOK=$ARCH_DIR/$(date +"%Y-%m-%d_%H.%M.%S")_$(basename $f)
+	mv $f $FOK 
+	gzip -9 $FOK
+	
+	echo "Fine elaborazione file $f OK"
+done
+
+
+echo "Fine aggiorna dati DURC"
+
+
+COND $Last_RC EXIT
+
+#END

@@ -1,0 +1,13 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/tracciato/run_tracciato_770.kjb \
+  -param:anno_bilancio=$ANNO \
+  -param:codice_ente=${SCHEDULER_PARAM_ENTE} \
+  -param:ex_ente=$EX_ENTE \
+  -param:quadro_c_f=$QUADRO_C_F  \
+  -level=$ETL_LOG_LEVEL
+
+#END

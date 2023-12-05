@@ -1,0 +1,15 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+ECHO "Svecchiamento stampe ente: REGP"
+ECHO "Lancio etl stampe-cleanup.kjb"
+
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/cleanups/stampe-cleanup.kjb      \
+        -param:codice_ente=REGP                                      \
+        -level=${PLOGLEVEL:-Detailed}
+
+
+#END
+
+

@@ -1,0 +1,80 @@
+JOB_NAME=$1
+
+
+function check_error {
+	exit_code=$1
+	
+	if [ $exit_code -ne 0 ]; then
+	  (
+	     sleep 10;
+	     log=$(ls -1 /skedul/progetti/siac/dati/log/${JOB_NAME}*.log)
+	     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+	     cp $log $logcp
+	     gzip $logcp
+	     echo -n | mail -a ${logcp}.gz -s "Log job $JOB_NAME" servizio.contabilia@csi.it
+	     rm -f ${logcp}.gz
+	   ) &
+	
+	   exit
+	fi
+}
+
+
+
+scaricoPerTipoEnteAnno() {
+	/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/scarichi_massivi/etl/run_${1}.kjb \
+			-level=${PLOGLEVEL:-Detailed}										  \
+			-param:codice_ente=$2                                             \
+			-param:anno_bilancio=$3                                                                 
+}
+
+
+
+
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+#Procscript
+
+Y=$(date +%Y)
+YEAR=$(( $Y-1 ))
+echo "Running scarico massivo $PARAM_ENTE chiusura $YEAR / $Y"
+scaricoPerTipoEnteAnno all_chiusura $PARAM_ENTE $YEAR
+
+
+# COND $Last_RC EXIT
+
+
+
+
+
+check_error $?
+
+#------------------------------------#
+# STEP 02                            #
+#------------------------------------#
+
+
+
+YEAR=$(date +%Y)
+echo "Running scarico massivo $PARAM_ENTE gestione ${YEAR}"
+scaricoPerTipoEnteAnno all $PARAM_ENTE $YEAR
+
+
+
+check_error $?
+
+#------------------------------------#
+# STEP 03                            #
+#------------------------------------#
+
+
+
+YEAR=$(( $(date +%Y)+1 ))
+
+echo "Running Scarichi massivi $PARAM_ENTE previsione $YEAR"
+
+for i in capitolo_spesa capitolo_entrata capitolo_vincoli ; do scaricoPerTipoEnteAnno $i $PARAM_ENTE $YEAR ; done
+
+
+#END

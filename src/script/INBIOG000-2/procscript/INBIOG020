@@ -1,0 +1,164 @@
+JOB_NAME=$1
+
+
+function check_error {
+	exit_code=$1
+	
+	if [ $exit_code -ne 0 ]; then
+	  (
+	     sleep 10;
+	     log=$(ls -1 /skedul/progetti/siac/dati/log/${JOB_NAME}*.log)
+	     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+	     cp $log $logcp
+	     gzip $logcp
+	     echo -n | mail -a ${logcp}.gz -s "Log job $JOB_NAME" servizio.contabilia@csi.it
+	     rm -f ${logcp}.gz
+	   ) &
+	
+	   exit
+	fi
+}
+
+
+
+run_oil_uniit_ricevute() {
+	CODICE_LINEA_CLIENTE=$1
+	CODICE_ENTE=$2
+	TIPO=$3
+	DATA=$4
+	FOLDER=$5
+
+	mkdir -p $FOLDER
+
+	$JAVA_HOME/bin/java  -Dhttps.proxyHost=proxy-srv.csi.it -Dhttps.proxyPort=3128 \
+		-cp .:$MYHOME/config/$CODICE_LINEA_CLIENTE:$MYHOME/lib/siacbatch.jar    \
+			   it.csi.siac.siacbatch.main.SiacBatchLauncher                 \
+	   --batch OIL_UNIIT_RICEVUTE                                        \
+	   --codice_ente $CODICE_ENTE                                        \
+	   --tipo $TIPO                                        \
+	   --data $DATA                                        \
+	   --path $FOLDER
+}
+
+
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+
+set -e
+#set -x
+ENTE=$SCHEDULER_PARAM_ENTE
+#############DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+TIPO_FLUSSO=$SCHEDULER_PARAM_TIPO_FLUSSO
+COD_FLUSSO_MIF=$SCHEDULER_PARAM_CODICE_MIF_UNIIT
+LINEA_CLIENTE=$SCHEDULER_PARAM_LINEA_CLIENTE
+OFFSET=$SCHEDULER_PARAM_OFFSET
+
+DT=$(date +%Y%m%d_%H%M%S)
+PFX="A_"
+
+# la cartella dove sono unzippati i file scaricati
+OUTDIR=/skedul/progetti/siac/dati/wrk/oil-uniapi/$ENTE
+
+# usa oggi come data di elaborazione se non ne C( stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+        fi
+
+#DATA_ELABORAZIONE=2021-12-04 ###
+
+if [ -z "$TIPO_FLUSSO" ]; then
+        echo "Il TIPO di flusso (gdc o emiofe) non e' stato specificato"
+                exit -1
+                fi
+
+# chiama  run_oil_uniit per il download del file
+# es: run_oil_uniit_ricevute   INT-01  RPI_OPI "gdc ricsisc" 2017-12-28   /tmp/
+#
+
+
+TMPFOLDER=$(mktemp -du -t uniit.XXXXXXXXX)
+
+
+run_oil_uniit_ricevute $LINEA_CLIENTE $COD_FLUSSO_MIF $TIPO_FLUSSO $DATA_ELABORAZIONE ${TMPFOLDER}/
+
+# verifica se c'e' lo zip
+NUM_FILES=$(ls -1 $TMPFOLDER|wc -l)
+if [ "$NUM_FILES" -eq "0" ]; then
+        exit 0
+fi
+ZIPFILE=$(ls $TMPFOLDER/*)
+
+# si assicura di eliminare ogni file precedente
+rm -rf $OUTDIR/$DATA_ELABORAZIONE
+mkdir -p $OUTDIR
+
+# scompatta lo zip scaricato ed elimina la cartella temporanea
+unzip -o $ZIPFILE $DATA_ELABORAZIONE/* -d $OUTDIR
+rm -rf $TMPFOLDER
+
+# dopo unzippato rinomina i file (forse)
+FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/*)
+
+
+for f in $FILES
+do
+   dir=$(dirname $f)
+   name=$(basename $f)
+   echo "$f --> $dir/$PFX$name"
+ 
+   mv $f $dir/${PFX}${name}
+done
+
+
+
+# COND $Last_RC EXIT
+
+
+check_error $?
+
+#------------------------------------#
+# STEP 02                            #
+#------------------------------------#
+
+
+
+# invoca il job pentaho per l'import delle firme
+###################################################
+
+ENTE=$SCHEDULER_PARAM_ENTE
+##############DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+CODICE_FLUSSO=$SCHEDULER_PARAM_CODICE_FLUSSO
+OFFSET=$SCHEDULER_PARAM_OFFSET
+
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+	DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+fi
+
+#DATA_ELABORAZIONE=2021-12-04 ###
+
+
+ANNO=$(echo "$DATA_ELABORAZIONE" | cut -d'-' -f1)
+ETL_SRC=/skedul/etl_open/siac/siacetlbo/ordinativoInformatico/
+
+echo "run-mif-siopeplus-xxxx.kjb $ENTE $ANNO $DATA_ELABORAZIONE $CODICE_FLUSSO"
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=$ETL_SRC/ritorni/run-mif-siopeplus-xxxx.kjb \
+    -level=Detailed  \
+    -param:codice_ente=$ENTE                    \
+    -param:anno_bilancio=$ANNO					\
+    -param:data_elaborazione=$DATA_ELABORAZIONE \
+	-param:codice_tipo_flusso=$CODICE_FLUSSO
+
+
+#END
+
+
+
+############
+
+check_error $?
+

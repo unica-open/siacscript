@@ -1,0 +1,7 @@
+#!/bin/ksh
+#------------------#
+# scheda di lancio #
+#------------------#
+CONT=$1
+. $@FPATHDIR@
+EXEC $SCRIPT PENTAHO440

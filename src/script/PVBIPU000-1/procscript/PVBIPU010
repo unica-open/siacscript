@@ -1,0 +1,8 @@
+export PGPASSWORD='c0ntab1l1a$21'
+
+
+cat<<_EOQ_ | /bin/psql --single-transaction ${siac_db_cmto_conn}
+
+SELECT fnc_dba_azione_richiesta_clean('1 MONTH');
+
+_EOQ_

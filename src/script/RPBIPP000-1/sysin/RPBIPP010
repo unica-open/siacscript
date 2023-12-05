@@ -1,0 +1,8 @@
+export MYHOME=/skedul/java/siac/siacbatch
+export JAVA_HOME=/opt/jdk1.8.0_112
+export JAVA_PATH=$MYHOME/bin
+export ETL_PROD=@ETL_PROD@
+
+export PAR_LINEA_CLIENTE=RP-01
+export CODICE_ENTE_JAVA=SIAC-REGP
+export CODICE_ENTE=REGP

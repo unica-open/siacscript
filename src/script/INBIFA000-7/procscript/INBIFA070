@@ -1,0 +1,33 @@
+#------------------------------------------#
+# STEP 01
+#------------------------------------------#
+
+ECHO "Esecuzione Allineamento stanziamenti residuo/cassa su bilancio di previsione per ente: $CODICE_ENTE"
+#ANNO=$(date +%Y)
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/bilancio/fase-bilancio.kjb \
+  -param:nome_job=10-calc-stanziamento-residuo                           \
+  -param:codice_ente=$CODICE_ENTE                                        \
+  -param:anno_bilancio=$ANNO_BILANCIO                             \
+  -param:p10_elem_tipo_code=$O1_ELEM_TIPO_CODE_PREV                        \
+  -param:p10_elem_tipo_code_prev=$O2_ELEM_TIPO_CODE_GEST                   \
+  -param:p10_calcolo_res=$O3_CALCOLO_RES                                   \
+  -param:p10_calcolo_cassa=$O4_CALCOLO_CASSA                               \
+  -param:p10_res_calcolato=$O5_RES_CALCOLATO                               \
+  -param:p10_aggiorna_stanz=$O6_AGGIORNA_STANZ                             \
+  -level=${ETL_LOGLEVEL:-Detailed}  
+
+
+############
+
+# if [ $? -ne 0 ]; then
+  (
+     sleep 10;
+     log=$(ls -1 /skedul/progetti/siac/dati/log/${1}*.log)
+     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+     cp $log $logcp
+     gzip $logcp
+     echo -n | mail -a ${logcp}.gz -s "Log job $1" servizio.contabilia@csi.it
+     rm -f ${logcp}.gz
+   ) &
+# fi
+

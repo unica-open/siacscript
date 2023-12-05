@@ -1,0 +1,15 @@
+#------------------------------------------#
+# STEP 01
+#------------------------------------------#
+
+data_elaborazione=`date +%Y-%m-%d`
+ECHO "Esecuzione Bilancio armonizzato per ente: $CODICE_ENTE"
+ECHO "Anno bilancio: $ANNO_BILANCIO"
+ECHO "Data elaborazione: $data_elaborazione"
+
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/bilarm/etl/run_bilancio_armonizzato.kjb \
+  -param:codice_ente=$CODICE_ENTE \
+  -param:anno_bilancio=$ANNO_BILANCIO \
+  -level=${ETL_LOGLEVEL:-Detailed}
+
+  

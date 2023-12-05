@@ -1,0 +1,14 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+# seleziona e cancella i file TEMPORANEI con la data di modifica superiore a due giorni
+echo ===== Sto rimuovendo i seguenti file dalle aree temporanee =====
+find /skedul/progetti/siac/dati/out/clearo/ -type f -mtime +2 -ls -delete
+echo ------
+echo
+
+echo ===== Sto rimuovendo i seguenti file dalle aree di interscambio =====
+# rimuove i file dalle aree di interscambio (quelli piu vecchi di 2 giorni)
+find /interscambio_nivola/skedul/siac/out/clearo -type f -mtime +2 -ls -delete
+echo ------
+#END

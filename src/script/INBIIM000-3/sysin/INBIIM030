@@ -1,0 +1,10 @@
+#------------------------------------------------#
+# IMPOSTAZIONE PARAMETRI                         #
+#------------------------------------------------#
+ETL_PROD=@ETL_PROD@
+SCHEDULER_PARAM_ENTE=ARPEA
+
+#------------------------------------------------#
+# EXPORT DELLE VARIABILI UTILIZZATE DALLO SCRIPT #
+#------------------------------------------------#
+export ETL_PROD SCHEDULER_PARAM_ENTE

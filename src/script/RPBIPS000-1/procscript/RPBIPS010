@@ -1,0 +1,21 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+#########################################################################################
+# invoca il job pentaho per lo svecchiamento periodico dei dati di Pagopa in Contabilia #
+#########################################################################################
+
+DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+# usa oggi come data di elaborazione se non ne e' stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$(date -d "$OFFSET"  +%Y-%m-%d)
+fi
+
+ECHO Lancio etl launcher.kjb
+
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/pagopa/launcher.kjb \
+  -param:nome_job=02-Elaborazione_Riconc_svecchia \
+  -param:codice_ente=${CODICE_ENTE} \
+  -param:linea_cliente=${LINEA_CLIENTE} \
+  -level=${ETL_LOGLEVEL:-Detailed}

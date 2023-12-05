@@ -1,0 +1,13 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+ECHO "Lancio etl clean_oldfiles.kjb"
+
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/scarichi_massivi/etl/clean_oldfiles.kjb      \
+        -level=${PLOGLEVEL:-Detailed}
+
+
+#END
+
+

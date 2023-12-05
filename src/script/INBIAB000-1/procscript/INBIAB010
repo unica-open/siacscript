@@ -1,0 +1,15 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+#Procscript
+ECHO Lancio applicativo JAVA scarico dati ABI/CAB da Banca di Italia
+
+$JAVA_HOME/bin/java -Dhttps.proxyHost=proxy-srv.csi.it -Dhttps.proxyPort=3128  -cp .:$MYHOME/config/$PAR_LINEA_CLIENTE:$MYHOME/lib/siacbatch.jar    \
+        it.csi.siac.siacbatch.main.SiacBatchLauncher \
+        --batch ABI_CAB                                                      \
+        --download_url https://tesoreria.unicreditbanca.it/downloadFileAbiCab.do
+
+
+COND $Last_RC EXIT
+
+#END

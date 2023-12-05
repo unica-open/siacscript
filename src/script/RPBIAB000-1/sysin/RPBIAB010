@@ -1,0 +1,6 @@
+export PAR_LINEA_CLIENTE=RP-01
+export MYHOME=/skedul/java/siac/siacbatch
+export JAVA_HOME=/opt/jdk1.8.0_112
+
+JAVA_PATH=$MYHOME/bin
+

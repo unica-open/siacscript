@@ -1,0 +1,108 @@
+JOB_NAME=$1
+
+
+function check_error {
+	exit_code=$1
+	
+	if [ $exit_code -ne 0 ]; then
+	  (
+	     sleep 10;
+	     log=$(ls -1 /skedul/progetti/siac/dati/log/${JOB_NAME}*.log)
+	     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+	     cp $log $logcp
+	     gzip $logcp
+	     echo -n | mail -a ${logcp}.gz -s "Log job $JOB_NAME" servizio.contabilia@csi.it
+	     rm -f ${logcp}.gz
+	   ) &
+	
+	   exit
+	fi
+}
+
+
+
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+
+set +x
+ENTE=$SCHEDULER_PARAM_ENTE
+#################DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+TODAY=$(date +%Y-%m-%d)
+ANNO=$(date +%Y)
+DT=$(date +%Y%m%d_%H%M%S)
+PFX=${ENTE}_${DT}_
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+        DATA_ELABORAZIONE=$TODAY
+fi
+
+# file zip da "elaborare"
+ZIPFILE="$SCHEDULER_PARAM_ZIPFILE"
+
+# la cartella dove va unzippato (warning: folder names could clash)
+OUTDIR=/skedul/progetti/siac/dati/wrk/oil-uniapi/$ENTE
+rm -rf $OUTDIR/$DATA_ELABORAZIONE
+mkdir -p $OUTDIR
+
+# scompatta lo zip scaricato
+unzip -o $ZIPFILE $DATA_ELABORAZIONE/* -d $OUTDIR
+
+# dopo unzippato rinomina i file (forse)
+FILES=$(ls $OUTDIR/$DATA_ELABORAZIONE/*_GDC_*.xml)
+for f in $FILES
+do
+        dir=$(dirname $f)
+        name=$(basename $f)
+        echo "$f --> $dir/$PFX$name"
+        # rinomina i file contenuti
+        mv $f $dir/${PFX}${name}
+done
+
+
+# COND $Last_RC EXIT
+
+
+check_error $?
+
+#------------------------------------#
+# STEP 02                            #
+#------------------------------------#
+
+
+
+# invoca il job pentaho per l'import delle firme
+###################################################
+
+ENTE=$SCHEDULER_PARAM_ENTE
+############DATA_ELABORAZIONE=$SCHEDULER_PARAM_DATA_ELABORAZIONE
+##############ANNO=$SCHEDULER_PARAM_ANNO
+
+# usa oggi come data di elaborazione se non ne è stata definita una specifica
+if [ -z "$DATA_ELABORAZIONE" ]; then
+	DATA_ELABORAZIONE=$TODAY
+fi
+
+# deduce l'anno di bilancio dalla data di elaborazione
+if [ -z "$ANNO" ]; then
+    ANNO=$(echo "$DATA_ELABORAZIONE" | cut -d'-' -f1)
+fi
+
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/ordinativoInformatico/ritorni/run-mif-siopeplus-xxxx.kjb \
+        -level=Detailed                             \
+        -param:codice_ente=$ENTE                    \
+        -param:anno_bilancio=$ANNO					\
+        -param:data_elaborazione=$DATA_ELABORAZIONE \
+	-param:codice_tipo_flusso=GIOCASSA
+
+#END
+
+
+
+############
+
+check_error $?
+

@@ -1,0 +1,4 @@
+export ETL_PROD=@ETL_PROD@
+
+export CODICE_ENTE=CRP
+export ANNO_BIL=`date +%Y`

@@ -1,0 +1,9 @@
+#------------------------------------------#
+# STEP 01
+#------------------------------------------#
+ECHO "Invio marc per ente: $SCHEDULER_PARAM_ENTE"
+ECHO Richiamo kitchen.sh -file=$ETL_PROD/pcc/invio-marc.kjb
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/pcc/invio-marc.kjb	\
+	-param:codice_ente=CMTO									\
+	-param:skip_update_registrazione_data=${2:-true}		\
+	-level=${PLOGLEVEL:-Detailed}

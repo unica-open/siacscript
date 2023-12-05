@@ -1,0 +1,10 @@
+
+ANNO=$(date +'%Y')
+
+
+/appserv/pentaho440/data-integration/kitchen.sh -file=/skedul/etl_open/siac/siacetlbo/progetti/run_progetti_allinea.kjb \
+  -param:anno_bilancio=$ANNO \
+  -param:codice_ente=${SCHEDULER_PARAM_ENTE} \
+  -param:tipo_allineamento='gp|GP|PG'  \
+  -level=$ETL_LOG_LEVEL
+

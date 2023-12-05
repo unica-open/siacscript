@@ -1,0 +1,34 @@
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+
+TMPDIR=$(mktemp -d -t oil.rpc.XXXXXXXXX)
+DT=$(date -d "-1 day"  +%Y-%m-%d)
+MAIL_ADDR=servizio.contabilia@csi.it
+ENTE=AIPO
+LINCLI=INT-01_${ENTE}
+CODMIF=PRAIPO
+
+
+#DT=2021-12-18 ###
+
+
+/skedul/java/siac/siacbatch/bin/run-oil_uniit_ricevute $LINCLI $CODMIF rpc $DT $TMPDIR/
+
+
+[ $? -ne 0 ] && echo "Errore richiesta OIL RPC per il giorno $DT" | mail -s "RPC OIL $ENTE" $MAIL_ADDR && rm -rf $TMPDIR && exit 1
+
+find $TMPDIR -name "*.zip" | while read z
+do
+        ZDIR="${z}-content"
+        unzip -qq $z -d $ZDIR
+        grep -qRoP '<Status_Esito>\s*201\s*</Status_Esito>' $ZDIR/*  \
+                && echo "Status Esito 201 per il giorno $DT"  \
+                && echo "Status Esito 201 per il giorno $DT" | mail -a $z -s "RPC OIL $ENTE" $MAIL_ADDR  \
+                || echo "Esito OK per il giorno $DT"
+        rm -rf $ZDIR
+        rm -f $z
+done
+
+rm -rf $TMPDIR
+

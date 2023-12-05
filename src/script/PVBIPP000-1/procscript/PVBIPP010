@@ -1,0 +1,55 @@
+JOB_NAME=$1
+
+
+function check_error {
+	exit_code=$1
+	
+	if [ $exit_code -ne 0 ]; then
+	  (
+	     sleep 10;
+	     log=$(ls -1 /skedul/progetti/siac/dati/log/${JOB_NAME}*.log)
+	     logcp=$(head -c -5 <<<"$log")-$(date +"%Y%m%d_%H%M%S").log
+	     cp $log $logcp
+	     gzip $logcp
+	     echo -n | mail -a ${logcp}.gz -s "Log job $JOB_NAME" servizio.contabilia@csi.it
+	     rm -f ${logcp}.gz
+	   ) &
+	
+	   exit
+	fi
+}
+
+
+#------------------------------------#
+# STEP 01                            #
+#------------------------------------#
+ECHO Lancio applicativo JAVA PagoPa
+
+$JAVA_HOME/bin/java -Dhttps.proxyHost=proxy-srv.csi.it \
+                    -Dhttps.proxyPort=3128  \
+                    -cp .:$MYHOME/config/$PAR_LINEA_CLIENTE:$MYHOME/lib/siacbatch.jar  \
+        it.csi.siac.siacbatch.main.SiacBatchLauncher \
+        --batch PAGOPA \
+        --codice_ente $CODICE_ENTE_JAVA
+
+
+
+check_error $?
+
+
+#------------------------------------#
+# STEP 02                            #
+#------------------------------------#
+ECHO Lancio etl PagoPa Riconciliazione
+
+$KETTLE_DIR/kitchen.sh -file=$ETL_PROD/pagopa/launcher.kjb \
+  -param:nome_job=01-Elaborazione_Riconc \
+  -param:codice_ente=${CODICE_ENTE} \
+  -param:linea_cliente=${PAR_LINEA_CLIENTE} \
+  -level=${ETL_LOGLEVEL:-Detailed}
+
+
+check_error $?
+
+
+

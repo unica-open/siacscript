@@ -1,0 +1,6 @@
+function hello {
+	param=$1
+	echo ciao $param
+	
+	return 42
+}
